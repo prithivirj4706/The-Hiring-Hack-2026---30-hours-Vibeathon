@@ -21,4 +21,4 @@ Reference: internal evaluation protocol. Used to pace development against judgin
 
 - Keep all secrets in `.env` (never committed) — see `backend/.env.example`.
 - No hardcoded absolute file paths anywhere in the codebase.
-- AI Service Layer must call the real Gemini API, not static/mocked responses.
+- AI Service Layer must call a real LLM (Ollama/Llama 3), not static/mocked responses. If deployed, `OLLAMA_BASE_URL` must point to a reachable hosted/remote Ollama instance — a `localhost` default alone will fail the "Pure Localhost Dependency" check once the backend runs on Render.

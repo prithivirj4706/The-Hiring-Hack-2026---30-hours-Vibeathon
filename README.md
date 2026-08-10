@@ -7,7 +7,7 @@ AI-powered career recommendation and internship matching platform connecting BPU
 - **Frontend**: React + Vite + Tailwind CSS
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB Atlas
-- **AI**: Gemini API
+- **AI**: Ollama (Llama 3, local/self-hosted LLM)
 - **File Storage**: Cloudinary
 - **Deployment**: Vercel (frontend), Render (backend)
 
@@ -43,7 +43,41 @@ bput-career-platform/
 
 ## Local Setup
 
-### Frontend
+Requires: Node 18+, Python 3.11+, a local `mongod` (or an Atlas URI), and Ollama.
+
+### 1. AI Service (Ollama) — start this first, the model pull takes a few minutes
+
+```
+ollama pull llama3.2:3b
+ollama serve   # exposes http://localhost:11434 by default
+```
+
+`llama3.2:3b` is the default in `.env.example` — a good balance of quality/speed for a laptop.
+Swap in `llama3` (8B) if you have the RAM/GPU for it; update `OLLAMA_MODEL` accordingly.
+
+### 2. Backend
+
+```
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+# generate a real secret: python -c "import secrets; print(secrets.token_urlsafe(48))"
+# paste it into JWT_SECRET in .env
+uvicorn app.main:app --reload
+```
+
+Seed demo accounts + internships (password for every seeded account is `demo1234`):
+
+```
+python seed.py --ai   # --ai runs real resume analysis through Ollama; omit to skip and seed instantly
+```
+
+Check `GET http://localhost:8000/api/health` — it reports whether MongoDB and the Ollama model
+are actually reachable, which is the fastest way to debug a "nothing works" demo.
+
+### 3. Frontend
 
 ```
 cd frontend
@@ -51,16 +85,16 @@ npm install
 npm run dev
 ```
 
-### Backend
+Open http://localhost:5173, then sign in with a seeded account (e.g. `ananya@bput.ac.in` /
+`demo1234` for the student portal, `kavita@technova.com` for a recruiter, `admin@bput.ac.in` for
+the placement officer analytics dashboard) or use the one-click demo login buttons on the sign-in
+page.
 
-```
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env   # fill in secrets
-uvicorn app.main:app --reload
-```
+### Deployment note
+
+Set `OLLAMA_BASE_URL` / `OLLAMA_MODEL` in `backend/.env` to point at a remote/hosted Ollama
+instance for deployment — Render's backend cannot reach `localhost` on your dev machine, so a bare
+`localhost` default there fails the milestone's "Pure Localhost Dependency" check.
 
 ## Branching
 

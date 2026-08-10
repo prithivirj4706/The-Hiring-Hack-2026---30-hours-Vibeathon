@@ -11,7 +11,7 @@
 - **Frontend**: React + Tailwind (Student / Recruiter / Admin UI), communicating via REST (Axios/Fetch)
 - **Backend**: FastAPI
 - **Database**: MongoDB Atlas
-- **External Services**: Gemini API, Cloudinary (resume storage), Render (backend hosting), Vercel (frontend hosting)
+- **External Services**: Ollama (Llama 3), Cloudinary (resume storage), Render (backend hosting), Vercel (frontend hosting)
 
 ## Backend Modules
 
@@ -21,7 +21,7 @@
 - **Recommendation Engine** — career prediction, skill gap analysis, learning roadmap
 - **Internship Matching Engine** — resume ↔ JD matching, candidate ranking, match score
 - **Analytics Module** — placement statistics, department reports, skill insights
-- **AI Service Layer** — Gemini API integration, prompt engineering, resume analysis, recommendation generation
+- **AI Service Layer** — Ollama (Llama 3) integration, prompt engineering, resume analysis, recommendation generation
 
 ## Database Collections
 
@@ -62,7 +62,7 @@ USERS
  └── Applications, Recommendations, Analytics
                                 │
                      External Cloud Services
- ├── Gemini API
+ ├── Ollama (Llama 3)
  ├── Cloudinary (Resume Storage)
  ├── Render (Backend)
  └── Vercel (Frontend)

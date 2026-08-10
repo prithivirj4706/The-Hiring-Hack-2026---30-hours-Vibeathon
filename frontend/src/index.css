@@ -1,1 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap");
 @import "tailwindcss";
+
+/* Design tokens ported from the CareerPulse AI Stitch export ("Modern Logic" design system). */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-background: #f7f9fb;
+  --color-surface: #f7f9fb;
+  --color-surface-dim: #d8dadc;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-surface-variant: #e0e3e5;
+
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #414753;
+  --color-on-background: #191c1e;
+  --color-inverse-surface: #2d3133;
+  --color-inverse-on-surface: #eff1f3;
+
+  --color-outline: #717785;
+  --color-outline-variant: #c1c6d5;
+
+  --color-primary: #4755a9;
+  --color-primary-dark: #303f92;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #606ec3;
+  --color-on-primary-container: #fffbff;
+  --color-primary-fixed: #dee0ff;
+
+  --color-secondary: #7d5800;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ffb702;
+  --color-on-secondary-container: #6b4b00;
+
+  --color-accent: #843ba3;
+  --color-tertiary: #843ba3;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #a055be;
+  --color-on-tertiary-container: #fffbff;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background);
+  color: var(--color-on-surface);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-size: 1.25rem;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* Reserved for special hero/auth panels — the standard Card component uses flat tonal surfaces. */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
