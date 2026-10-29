@@ -5,6 +5,7 @@ import './index.css'
 import AppLayout from './layouts/AppLayout'
 import AdminDashboard from './pages/admin/Dashboard'
 import AiDemo from './pages/AiDemo'
+import AuthCallback from './pages/AuthCallback'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import Applicants from './pages/recruiter/Applicants'
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
 
           <Route
             path="/student"

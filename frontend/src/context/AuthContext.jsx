@@ -33,14 +33,21 @@ export function AuthProvider({ children }) {
     return registered
   }, [])
 
+  // Finishes a social login: the token already came back from the provider round-trip.
+  const loginWithToken = useCallback(async (token) => {
+    const loggedIn = await authService.completeOAuth(token)
+    setUser(loggedIn)
+    return loggedIn
+  }, [])
+
   const logout = useCallback(() => {
     authService.logout()
     setUser(null)
   }, [])
 
   const value = useMemo(
-    () => ({ user, loading, login, register, logout }),
-    [user, loading, login, register, logout],
+    () => ({ user, loading, login, loginWithToken, register, logout }),
+    [user, loading, login, loginWithToken, register, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

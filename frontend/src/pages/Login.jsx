@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { Alert, Button, Icon, Input } from '../components/ui'
 import { HOME_BY_ROLE, useAuth } from '../context/AuthContext'
+import { oauthProviders, startOAuth } from '../services/authService'
 
 const QUICK_LOGINS = [
   { label: 'Student', email: 'ananya@bput.ac.in', icon: 'school' },
@@ -16,6 +17,15 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [social, setSocial] = useState({ google: false, github: false })
+  const [socialRole, setSocialRole] = useState('student')
+
+  // Only offer the buttons this deployment has credentials for.
+  useEffect(() => {
+    oauthProviders()
+      .then(setSocial)
+      .catch(() => setSocial({ google: false, github: false }))
+  }, [])
 
   if (user) return <Navigate to={HOME_BY_ROLE[user.role] ?? '/'} replace />
 
@@ -113,15 +123,60 @@ export default function Login() {
             <div className="flex-grow border-t border-outline-variant" />
           </div>
 
-          <button
-            type="button"
-            disabled
-            title="Google sign-in isn't wired up yet"
-            className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm font-semibold text-on-surface-variant opacity-60"
-          >
-            <Icon name="account_circle" />
-            Continue with Google (coming soon)
-          </button>
+          {(social.google || social.github) && (
+            <div className="mb-4">
+              <div className="mb-3 flex items-center justify-center gap-2 text-xs text-on-surface-variant">
+                <span>Sign up as</span>
+                {['student', 'recruiter'].map((role) => (
+                  <button
+                    key={role}
+                    type="button"
+                    onClick={() => setSocialRole(role)}
+                    className={`rounded-full px-3 py-1 font-semibold capitalize transition-colors ${
+                      socialRole === role
+                        ? 'bg-primary text-on-primary'
+                        : 'border border-outline-variant text-on-surface-variant hover:bg-surface-container-low'
+                    }`}
+                  >
+                    {role}
+                  </button>
+                ))}
+              </div>
+              <p className="mb-3 text-center text-xs text-outline">
+                Only applies the first time — returning accounts keep their role.
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-3">
+            {social.google && (
+              <button
+                type="button"
+                onClick={() => startOAuth('google', socialRole)}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-outline-variant bg-surface-container-lowest px-4 py-3 text-sm font-semibold text-on-surface transition-colors hover:bg-surface-container-low"
+              >
+                <Icon name="account_circle" />
+                Continue with Google
+              </button>
+            )}
+
+            {social.github && (
+              <button
+                type="button"
+                onClick={() => startOAuth('github', socialRole)}
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#24292f] px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                <Icon name="code" />
+                Continue with GitHub
+              </button>
+            )}
+
+            {!social.google && !social.github && (
+              <p className="rounded-lg border border-dashed border-outline-variant px-4 py-3 text-center text-xs text-on-surface-variant">
+                Social sign-in is not configured on this server.
+              </p>
+            )}
+          </div>
 
           <div className="mt-6 border-t border-outline-variant/60 pt-4">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-outline">Demo accounts</p>

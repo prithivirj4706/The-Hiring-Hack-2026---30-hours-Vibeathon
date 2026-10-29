@@ -7,7 +7,8 @@ AI-powered career recommendation and internship matching platform connecting BPU
 - **Frontend**: React + Vite + Tailwind CSS
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB Atlas
-- **AI**: Ollama (Llama 3, local/self-hosted LLM)
+- **AI**: Llama 3 — Ollama locally, Groq (`llama-3.3-70b-versatile`) in deployment
+- **Auth**: JWT + OAuth 2.0 (Google, GitHub)
 - **File Storage**: Cloudinary
 - **Deployment**: Vercel (frontend), Render (backend)
 
@@ -90,11 +91,33 @@ Open http://localhost:5173, then sign in with a seeded account (e.g. `ananya@bpu
 the placement officer analytics dashboard) or use the one-click demo login buttons on the sign-in
 page.
 
-### Deployment note
+## Deployment
 
-Set `OLLAMA_BASE_URL` / `OLLAMA_MODEL` in `backend/.env` to point at a remote/hosted Ollama
-instance for deployment — Render's backend cannot reach `localhost` on your dev machine, so a bare
-`localhost` default there fails the milestone's "Pure Localhost Dependency" check.
+Full walkthrough: [`docs/deployment.md`](docs/deployment.md) — Neon (Postgres) → Render (API) →
+Vercel (frontend), with Groq serving the LLM.
+
+The AI layer switches provider by env var, so no code changes between environments:
+
+| Environment | `LLM_PROVIDER` | Model |
+| --- | --- | --- |
+| Local | `ollama` | `llama3.2:3b` on your machine |
+| Deployed | `groq` | `llama-3.3-70b-versatile` |
+
+Render cannot reach the Ollama on your laptop, so a `localhost` default in production would fail
+the milestone's "Pure Localhost Dependency" check — hence the Groq path.
+
+### OAuth 2.0
+
+Google and GitHub sign-in are wired up. Register these callback URLs with each provider:
+
+```
+{BACKEND_BASE_URL}/api/auth/oauth/google/callback
+{BACKEND_BASE_URL}/api/auth/oauth/github/callback
+```
+
+Set the matching `*_CLIENT_ID` / `*_CLIENT_SECRET` pairs in `backend/.env`. A provider with no
+credentials simply doesn't render its button — the sign-in page asks
+`/api/auth/oauth/providers` on load.
 
 ## Branching
 

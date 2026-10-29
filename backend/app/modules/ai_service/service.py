@@ -1,7 +1,7 @@
 import json
 import re
 
-from app.modules.ai_service.client import ollama_client
+from app.modules.ai_service.client import llm_client
 from app.modules.ai_service.prompts import (
     CAREER_RECOMMENDATION_SYSTEM_PROMPT,
     MATCHING_SYSTEM_PROMPT,
@@ -54,7 +54,7 @@ def _as_score(value) -> int:
 
 
 async def analyze_resume(resume_text: str) -> dict:
-    raw = await ollama_client.generate(
+    raw = await llm_client.generate(
         f"Resume:\n{resume_text}",
         system=RESUME_ANALYSIS_SYSTEM_PROMPT,
         format_json=True,
@@ -71,7 +71,7 @@ async def analyze_resume(resume_text: str) -> dict:
 
 
 async def generate_career_recommendations(student_profile: dict) -> dict:
-    raw = await ollama_client.generate(
+    raw = await llm_client.generate(
         f"Student profile:\n{json.dumps(student_profile, default=str)}",
         system=CAREER_RECOMMENDATION_SYSTEM_PROMPT,
         format_json=True,
@@ -86,7 +86,7 @@ async def generate_career_recommendations(student_profile: dict) -> dict:
 
 
 async def match_resume_to_job(resume_text: str, job_description: str) -> dict:
-    raw = await ollama_client.generate(
+    raw = await llm_client.generate(
         f"Resume:\n{resume_text}\n\nJob Description:\n{job_description}",
         system=MATCHING_SYSTEM_PROMPT,
         format_json=True,

@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.db.postgres import close_engine, init_db, ping
 from app.modules.ai_service.router import router as ai_router
 from app.modules.analytics.router import router as analytics_router
+from app.modules.auth.oauth import router as oauth_router
 from app.modules.auth.router import router as auth_router
 from app.modules.learning_engine.router import router as learning_router
 from app.modules.matching_engine.router import router as matching_router
@@ -37,6 +38,7 @@ app.add_middleware(
 )
 
 app.include_router(auth_router)
+app.include_router(oauth_router)
 app.include_router(student_router)
 app.include_router(student_resume_pdf_router)
 app.include_router(recruiter_router)
@@ -55,24 +57,48 @@ async def health():
 async def detailed_health():
     """Dependency check used by the frontend to warn before a demo goes wrong."""
     db_ok = await ping()
+    provider = settings.llm_provider.lower()
 
-    ollama_ok, model_ready = False, False
-    try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            response = await client.get(f"{settings.ollama_base_url.rstrip('/')}/api/tags")
-            response.raise_for_status()
-            ollama_ok = True
-            names = [m.get("name", "") for m in response.json().get("models", [])]
-            model_ready = any(n == settings.ollama_model or n.split(":")[0] == settings.ollama_model.split(":")[0] for n in names)
-    except Exception:
-        pass
+    llm_ok, model_ready, model = False, False, settings.ollama_model
+
+    if provider == "groq":
+        model = settings.groq_model
+        try:
+            async with httpx.AsyncClient(timeout=8.0) as client:
+                response = await client.get(
+                    f"{settings.groq_base_url.rstrip('/')}/models",
+                    headers={"Authorization": f"Bearer {settings.groq_api_key}"},
+                )
+                response.raise_for_status()
+                llm_ok = True
+                names = [m.get("id", "") for m in response.json().get("data", [])]
+                model_ready = settings.groq_model in names
+        except Exception:
+            pass
+    else:
+        try:
+            async with httpx.AsyncClient(timeout=5.0) as client:
+                response = await client.get(f"{settings.ollama_base_url.rstrip('/')}/api/tags")
+                response.raise_for_status()
+                llm_ok = True
+                names = [m.get("name", "") for m in response.json().get("models", [])]
+                model_ready = any(n == settings.ollama_model or n.split(":")[0] == settings.ollama_model.split(":")[0] for n in names)
+        except Exception:
+            pass
 
     return {
         "status": "ok" if (db_ok and model_ready) else "degraded",
         "database": {"connected": db_ok, "name": "bput_career (PostgreSQL)"},
-        "ollama": {
-            "reachable": ollama_ok,
-            "model": settings.ollama_model,
+        "ai": {
+            "provider": provider,
+            "reachable": llm_ok,
+            "model": model,
             "model_ready": model_ready,
         },
+        "oauth": {
+            "google": settings.google_oauth_enabled,
+            "github": settings.github_oauth_enabled,
+        },
+        # Kept for the existing frontend health banner, which reads `ollama`.
+        "ollama": {"reachable": llm_ok, "model": model, "model_ready": model_ready},
     }

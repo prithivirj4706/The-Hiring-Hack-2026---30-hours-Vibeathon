@@ -32,8 +32,10 @@ class User(Base):
     id: Mapped[str] = mapped_column(String, primary_key=True, default=_new_id)
     name: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False, index=True)
-    password_hash: Mapped[str] = mapped_column(String, nullable=False)
+    # Null for accounts created through Google/GitHub, which have no local password.
+    password_hash: Mapped[str | None] = mapped_column(String, nullable=True)
     role: Mapped[str] = mapped_column(String, nullable=False)
+    oauth_provider: Mapped[str | None] = mapped_column(String, nullable=True)
     is_verified: Mapped[bool] = mapped_column(default=False)
     verification_code_hash: Mapped[str | None] = mapped_column(String, nullable=True)
     verification_expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
@@ -46,6 +48,7 @@ class User(Base):
             "email": self.email,
             "role": self.role,
             "is_verified": self.is_verified,
+            "oauth_provider": self.oauth_provider,
             "created_at": self.created_at,
         }
 
