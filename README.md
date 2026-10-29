@@ -7,7 +7,7 @@ AI-powered career recommendation and internship matching platform connecting BPU
 - **Frontend**: React + Vite + Tailwind CSS
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB Atlas
-- **AI**: Llama 3 — Ollama locally, Groq (`llama-3.3-70b-versatile`) in deployment
+- **AI**: Ollama (Llama 3.2) locally, Groq (`openai/gpt-oss-120b`) in deployment
 - **Auth**: JWT + OAuth 2.0 (Google, GitHub)
 - **File Storage**: Cloudinary
 - **Deployment**: Vercel (frontend), Render (backend)
@@ -101,7 +101,7 @@ The AI layer switches provider by env var, so no code changes between environmen
 | Environment | `LLM_PROVIDER` | Model |
 | --- | --- | --- |
 | Local | `ollama` | `llama3.2:3b` on your machine |
-| Deployed | `groq` | `llama-3.3-70b-versatile` |
+| Deployed | `groq` | `openai/gpt-oss-120b` |
 
 Render cannot reach the Ollama on your laptop, so a `localhost` default in production would fail
 the milestone's "Pure Localhost Dependency" check — hence the Groq path.

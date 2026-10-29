@@ -42,8 +42,14 @@ no migration step.
 1. Go to https://console.groq.com/keys and create an API key (starts with `gsk_`).
 2. Keep it — it becomes `GROQ_API_KEY` on Render.
 
-The free tier covers `llama-3.3-70b-versatile`, which is what `GROQ_MODEL`
-defaults to. Local development still uses Ollama; only the deployed backend
+`GROQ_MODEL` defaults to `openai/gpt-oss-120b`, the strongest model on Groq's
+free tier. Note that Groq **retired the Llama ids from the free and Developer
+tiers in August 2026** — `llama-3.3-70b-versatile` now 404s unless you are on an
+enterprise plan, which is the most likely cause of a failing AI call.
+
+To see what a key can actually serve, deploy and read `/api/health`: when the
+configured model is unavailable the response lists the ids that are. Local
+development still runs Llama 3.2 through Ollama; only the deployed backend
 switches, via `LLM_PROVIDER=groq`.
 
 ---
