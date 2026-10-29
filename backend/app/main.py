@@ -60,6 +60,7 @@ async def detailed_health():
     provider = settings.llm_provider.lower()
 
     llm_ok, model_ready, model = False, False, settings.ollama_model
+    available: list[str] = []
 
     if provider == "groq":
         model = settings.groq_model
@@ -73,6 +74,11 @@ async def detailed_health():
                 llm_ok = True
                 names = [m.get("id", "") for m in response.json().get("data", [])]
                 model_ready = settings.groq_model in names
+                if not model_ready:
+                    # Groq retires model ids periodically (the Llama ids moved to
+                    # enterprise plans in Aug 2026). Say what this key *can* call
+                    # so GROQ_MODEL can be corrected without guesswork.
+                    available = sorted(n for n in names if n)[:12]
         except Exception:
             pass
     else:
@@ -94,6 +100,7 @@ async def detailed_health():
             "reachable": llm_ok,
             "model": model,
             "model_ready": model_ready,
+            **({"available_models": available} if available else {}),
         },
         "oauth": {
             "google": settings.google_oauth_enabled,
