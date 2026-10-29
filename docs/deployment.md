@@ -156,6 +156,20 @@ LLM provider). Every seeded account uses the password `demo1234`.
 
 ---
 
+## 6a. Live URLs
+
+| Piece | URL |
+| --- | --- |
+| Frontend (Vercel) | https://the-hiring-hack-2026-30-hours-vibea.vercel.app |
+| API (Render) | https://bput-career-api.onrender.com |
+| Health check | https://bput-career-api.onrender.com/api/health |
+
+Vercel enables **Deployment Protection** on new projects, which puts the site
+behind a Vercel login. Turn it off under Settings → Deployment Protection or the
+public URL requirement is not met.
+
+---
+
 ## 7. Post-deploy checklist
 
 - [ ] `GET /api/health` returns `"status":"ok"`

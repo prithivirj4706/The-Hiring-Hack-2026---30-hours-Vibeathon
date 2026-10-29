@@ -44,10 +44,13 @@ services:
       - key: GITHUB_CLIENT_SECRET
         sync: false
 
-      # --- Public URLs (set both after the first deploy gives you the hostnames) ---
+      # --- Public URLs ---
+      # Not secrets, so they live here rather than in the dashboard: the OAuth
+      # redirect URIs are built from BACKEND_BASE_URL, and the browser can only
+      # call this API from an origin listed in CORS_ORIGINS.
       - key: BACKEND_BASE_URL
-        sync: false
+        value: https://bput-career-api.onrender.com
       - key: FRONTEND_BASE_URL
-        sync: false
+        value: https://the-hiring-hack-2026-30-hours-vibea.vercel.app
       - key: CORS_ORIGINS
-        sync: false
+        value: https://the-hiring-hack-2026-30-hours-vibea.vercel.app
