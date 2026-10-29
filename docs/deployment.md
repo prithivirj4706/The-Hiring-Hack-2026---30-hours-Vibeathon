@@ -24,18 +24,13 @@ Collect these four accounts (all free, all sign-in-with-GitHub):
 ## 1. Database — Neon
 
 1. Create a project; name the database `bput_career`.
-2. Copy the connection string. It looks like:
-   `postgresql://user:pass@ep-xxx.ap-southeast-1.aws.neon.tech/bput_career?sslmode=require`
-3. **Rewrite it for asyncpg** — this app uses the async driver, and the default
-   string will not work:
-   - change `postgresql://` to `postgresql+asyncpg://`
-   - delete `?sslmode=require` (asyncpg rejects that parameter; it uses SSL anyway)
-
-   Final form:
-   ```
-   postgresql+asyncpg://user:pass@ep-xxx.ap-southeast-1.aws.neon.tech/bput_career
-   ```
-4. Keep this string — it becomes `DATABASE_URL` on Render.
+2. Copy the connection string from the dashboard. Neon hands you something like:
+   `postgresql://user:pass@ep-xxx.ap-southeast-1.aws.neon.tech/bput_career?sslmode=require&channel_binding=require`
+3. **Paste it as-is** into `DATABASE_URL`. The app normalises it on startup
+   (see `_normalise_url` in [`backend/app/db/postgres.py`](../backend/app/db/postgres.py)):
+   it rewrites the scheme to `postgresql+asyncpg://` and moves `sslmode` /
+   `channel_binding` into asyncpg's connect args, because asyncpg rejects both
+   as query parameters. A plain `postgres://` URL works too.
 
 Tables create themselves on first boot (`init_db()` runs at startup), so there is
 no migration step.
@@ -66,7 +61,7 @@ switches, via `LLM_PROVIDER=groq`.
 
    | Key | Value |
    | --- | --- |
-   | `DATABASE_URL` | the rewritten Neon string from part 1 |
+   | `DATABASE_URL` | the Neon string from part 1, pasted as-is |
    | `GROQ_API_KEY` | the `gsk_...` key from part 2 |
    | `LLM_PROVIDER` | `groq` |
    | `JWT_SECRET` | let Render generate it |
@@ -147,7 +142,7 @@ The deployed database starts empty. From your laptop, pointed at Neon:
 
 ```bash
 cd backend
-DATABASE_URL='postgresql+asyncpg://...neon...' ./venv/bin/python seed.py
+DATABASE_URL='<your Neon connection string>' ./venv/bin/python seed.py
 ```
 
 Add `--ai` to run real resume analysis during the seed (slower; needs a working
@@ -173,7 +168,7 @@ That last item is the milestone matrix's "Pure Localhost Dependency" check.
 
 | Symptom | Cause | Fix |
 | --- | --- | --- |
-| `InvalidCatalogNameError` on boot | Neon string still has `?sslmode=require` or `postgresql://` | Rewrite per part 1 |
+| `InvalidCatalogNameError` on boot | Database name in the URL does not exist on that branch | Create it in the Neon console, or point at `neondb` |
 | Social button missing | That provider's ID/secret pair is unset | Add both to Render, redeploy |
 | `redirect_uri_mismatch` | Registered URI differs from `BACKEND_BASE_URL` | Make them byte-identical, no trailing slash |
 | CORS error in the browser console | `CORS_ORIGINS` missing the Vercel URL | Add it, redeploy backend |
