@@ -69,7 +69,7 @@ cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
-Seed demo accounts + internships (password for every seeded account is `demo1234`):
+Seed demo accounts + internships:
 
 ```
 python seed.py --ai   # --ai runs real resume analysis through Ollama; omit to skip and seed instantly
@@ -86,10 +86,8 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173, then sign in with a seeded account (e.g. `ananya@bput.ac.in` /
-`demo1234` for the student portal, `kavita@technova.com` for a recruiter, `admin@bput.ac.in` for
-the placement officer analytics dashboard) or use the one-click demo login buttons on the sign-in
-page.
+Open http://localhost:5173 and sign in with one of the seeded accounts. `seed.py` prints the
+account list and their shared password to the console when it runs.
 
 ## Deployment
 

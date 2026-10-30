@@ -332,28 +332,6 @@ export default function Landing() {
             </a>
           </div>
         </div>
-
-        <div className="mt-10 rounded-xl border border-outline-variant bg-surface-container-lowest p-5">
-          <h3 className="font-semibold text-on-surface">Demo accounts</h3>
-          <p className="mt-0.5 text-sm text-on-surface-variant">
-            Seeded by <code className="rounded bg-surface-container-low px-1">python seed.py</code> —
-            password <code className="rounded bg-surface-container-low px-1">demo1234</code>
-          </p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-3">
-            {[
-              { role: 'Student', email: 'ananya@bput.ac.in' },
-              { role: 'Recruiter', email: 'kavita@technova.com' },
-              { role: 'Placement Officer', email: 'admin@bput.ac.in' },
-            ].map((account) => (
-              <div key={account.email} className="rounded-lg bg-surface-container-low px-3 py-2">
-                <p className="text-xs font-semibold uppercase tracking-wide text-on-surface-variant">
-                  {account.role}
-                </p>
-                <p className="text-sm text-on-surface">{account.email}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       <footer className="border-t border-outline-variant/60 py-6 text-center text-xs text-on-surface-variant">

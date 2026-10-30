@@ -4,12 +4,6 @@ import { Alert, Button, Icon, Input } from '../components/ui'
 import { HOME_BY_ROLE, useAuth } from '../context/AuthContext'
 import { oauthProviders, startOAuth } from '../services/authService'
 
-const QUICK_LOGINS = [
-  { label: 'Student', email: 'ananya@bput.ac.in', icon: 'school' },
-  { label: 'Recruiter', email: 'kavita@technova.com', icon: 'business_center' },
-  { label: 'Placement Officer', email: 'admin@bput.ac.in', icon: 'verified' },
-]
-
 export default function Login() {
   const { user, login } = useAuth()
   const navigate = useNavigate()
@@ -176,24 +170,6 @@ export default function Login() {
                 Social sign-in is not configured on this server.
               </p>
             )}
-          </div>
-
-          <div className="mt-6 border-t border-outline-variant/60 pt-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-outline">Demo accounts</p>
-            <div className="flex flex-wrap gap-2">
-              {QUICK_LOGINS.map((account) => (
-                <button
-                  key={account.email}
-                  type="button"
-                  disabled={loading}
-                  onClick={(event) => submit(event, { email: account.email, password: 'demo1234' })}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-outline-variant px-2.5 py-1.5 text-xs font-semibold text-on-surface-variant hover:bg-surface-container-low disabled:opacity-50"
-                >
-                  <Icon name={account.icon} className="!text-base" />
-                  {account.label}
-                </button>
-              ))}
-            </div>
           </div>
 
           <p className="mt-6 text-center text-sm text-on-surface-variant">

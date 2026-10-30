@@ -152,7 +152,9 @@ DATABASE_URL='<your Neon connection string>' ./venv/bin/python seed.py
 ```
 
 Add `--ai` to run real resume analysis during the seed (slower; needs a working
-LLM provider). Every seeded account uses the password `demo1234`.
+LLM provider). The script prints the seeded accounts and their password when it
+finishes — treat that password as a credential and change it before the site is
+left open to the public.
 
 ---
 
